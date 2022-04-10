@@ -23,10 +23,12 @@ const createCategory = async (req: Request, res: Response) => {
     const categoryCreated = await Category.create(categoryInput)
     return res.status(201).json(categoryCreated)
   } catch (err) {
-    return res.status(500).json({
-      message:
-        err.message || 'Some error occurred while creating the Category.',
-    })
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message:
+          err.message || 'Some error occurred while creating a Category.',
+      })
+    }
   }
 }
 
@@ -42,9 +44,11 @@ const getCategory = async (req: Request, res: Response) => {
     }
     return res.status(200).json(category)
   } catch (err) {
-    return res.status(500).json({
-      message: err.message || 'Some error occurred while getting a Category.',
-    })
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message: err.message || 'Some error occurred while getting a Category.',
+      })
+    }
   }
 }
 
@@ -55,9 +59,12 @@ const deleteCategory = async (req: Request, res: Response) => {
     await Category.findByIdAndDelete(id)
     return res.status(200).json({ message: 'Category deleted successfully.' })
   } catch (err) {
-    return res.status(500).json({
-      message: err.message || 'Some error occurred while deleting a Category.',
-    })
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message:
+          err.message || 'Some error occurred while deleting a Category.',
+      })
+    }
   }
 }
 
@@ -86,9 +93,12 @@ const updateCategory = async (req: Request, res: Response) => {
     const categoryUpdated = await Category.findById(id)
     return res.status(200).json(categoryUpdated)
   } catch (err) {
-    return res.status(500).json({
-      message: err.message || 'Some error occurred while updating a Category.',
-    })
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message:
+          err.message || 'Some error occurred while updating a Category.',
+      })
+    }
   }
 }
 export {

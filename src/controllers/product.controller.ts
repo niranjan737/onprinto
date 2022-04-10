@@ -36,10 +36,11 @@ const createProduct = async (req: Request, res: Response) => {
     const productCreated = await Product.create(productInput)
     return res.status(201).json(productCreated)
   } catch (err) {
-    return res.status(500).json({
-      message:
-        err.message || 'Some error occurred while creating the Category.',
-    })
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message: err.message || 'Some error occurred while adding a Product.',
+      })
+    }
   }
 }
 
@@ -55,9 +56,11 @@ const getProduct = async (req: Request, res: Response) => {
     }
     return res.status(200).json(product)
   } catch (err) {
-    return res.status(500).json({
-      message: err.message || 'Some error occurred while getting a Product.',
-    })
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message: err.message || 'Some error occurred while getting a Product.',
+      })
+    }
   }
 }
 
@@ -68,9 +71,11 @@ const deleteProduct = async (req: Request, res: Response) => {
     await Product.findByIdAndDelete(id)
     return res.status(200).json({ message: 'Category deleted successfully.' })
   } catch (err) {
-    return res.status(500).json({
-      message: err.message || 'Some error occurred while deleting a Category.',
-    })
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message: err.message || 'Some error occurred while deleting a Product.',
+      })
+    }
   }
 }
 
@@ -116,9 +121,11 @@ const updateProduct = async (req: Request, res: Response) => {
     const categoryUpdated = await Product.findById(id)
     return res.status(200).json(categoryUpdated)
   } catch (err) {
-    return res.status(500).json({
-      message: err.message || 'Some error occurred while updating a Product.',
-    })
+    if (err instanceof Error) {
+      return res.status(500).json({
+        message: err.message || 'Some error occurred while updating a Product.',
+      })
+    }
   }
 }
 export {
