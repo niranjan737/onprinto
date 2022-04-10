@@ -3,6 +3,9 @@ import bodyParser from 'body-parser'
 import cors from 'cors'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsDoc from 'swagger-jsdoc'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 //DB Configuration
 const dbConfig = require('./config/database.config')
@@ -50,8 +53,11 @@ app.get('/*', function (req, res) {
   res.status(404).json('Page Not Found')
 })
 
+console.log('process.env.PORT', process.env.PORT)
+
+const port = process.env.PORT || 5000
 // listen for requests
-const server = app.listen(3030, function () {
+const server = app.listen(port, function () {
   const serverAddress: AddressInfo = server.address() as AddressInfo
   const { address, port } = serverAddress
   console.log('Example app listening at http://%s:%s', address, port)
