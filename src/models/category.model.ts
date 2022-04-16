@@ -1,23 +1,23 @@
-import { Schema, model, Model, ObjectId } from 'mongoose'
+import { Schema, model, Model, ObjectId } from "mongoose";
 
 type CategoryInput = {
-  name: string
-  description?: string | null
-  image?: String | null
-  status?: number
-}
+  name: string;
+  description?: string | null;
+  image?: String | null;
+  status?: number;
+};
 
 interface ICategory extends CategoryInput {
-  _id: string
-  createdAt: Date
-  updatedAt: Date
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const CategorySchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, 'A Category must have a name'],
+      required: [true, "A Category must have a name"],
     },
     description: String,
     image: String,
@@ -29,6 +29,6 @@ const CategorySchema = new Schema(
   {
     timestamps: true,
   }
-)
-const Category: Model<ICategory> = model<ICategory>('category', CategorySchema)
-export { Category, CategoryInput, ICategory }
+);
+const Category: Model<ICategory> = model<ICategory>("category", CategorySchema);
+export { Category, CategoryInput, ICategory };

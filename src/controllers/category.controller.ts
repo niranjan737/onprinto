@@ -1,111 +1,90 @@
-import { Request, Response } from 'express'
-import { Category, CategoryInput } from '../models/category.model'
-import { CustomError, ResourceNotFoundError } from '../models/error.model'
+import { Request, Response } from "express";
 
-const getAllCategory = async (req: Request, res: Response) => {
-  const categories = await Category.find().sort('-createdAt').exec()
-  // throw new ResourceNotFoundError('Not Found 123')
-  return res.status(200).json({ data: categories })
-}
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Path,
+  Post,
+  Put,
+  Query,
+  Route,
+  SuccessResponse,
+  Tags,
+} from "tsoa";
 
-const createCategory = async (req: Request, res: Response) => {
-  const { description, name, status } = req.body
+import { CustomError, ResourceNotFoundError } from "../models/error.model";
+import { Category, CategoryInput, ICategory } from "../models/category.model";
 
-  const categoryInput: CategoryInput = {
-    name,
-    description,
+@Route("/api/admin")
+@Tags("Admin")
+export class CategoryController extends Controller {
+  @Get("/categories")
+  public async getAllCategory(): Promise<ICategory[]> {
+    const categories = Category.find().sort("-createdAt").exec();
+    return categories;
   }
+  @Post("/category")
+  public async createCategory(
+    @Body() category: CategoryInput
+  ): Promise<ICategory> {
+    const { description, name, status } = category;
 
-  if (typeof status != 'undefined') {
-    categoryInput.status = status
-  }
+    const categoryInput: CategoryInput = {
+      name,
+      description,
+    };
 
-  try {
-    const categoryCreated = await Category.create(categoryInput)
-    return res.status(201).json(categoryCreated)
-  } catch (err) {
-    if (err instanceof Error) {
-      return res.status(500).json({
-        message:
-          err.message || 'Some error occurred while creating a Category.',
-      })
+    if (typeof status != "undefined") {
+      categoryInput.status = status;
     }
+
+    return Category.create(categoryInput);
   }
-}
 
-const getCategory = async (req: Request, res: Response) => {
-  const { id } = req.params
-
-  try {
-    const category = await Category.findOne({ _id: id })
+  @Get("/category/{id}")
+  public async getCategory(@Path("id") id: string): Promise<ICategory | null> {
+    const category = await Category.findOne({ _id: id });
     if (!category) {
-      return res
-        .status(404)
-        .json({ message: `Category with id "${id}" not found.` })
+      throw new ResourceNotFoundError("Category not found");
     }
-    return res.status(200).json(category)
-  } catch (err) {
-    if (err instanceof Error) {
-      return res.status(500).json({
-        message: err.message || 'Some error occurred while getting a Category.',
-      })
-    }
+    return category;
   }
-}
 
-const deleteCategory = async (req: Request, res: Response) => {
-  const { id } = req.params
+  @Put("/category/{id}")
+  public async updateCategory(
+    @Path("id") id: string,
+    @Body() category: CategoryInput
+  ): Promise<ICategory | null> {
+    const { description, name, status } = category;
 
-  try {
-    await Category.findByIdAndDelete(id)
-    return res.status(200).json({ message: 'Category deleted successfully.' })
-  } catch (err) {
-    if (err instanceof Error) {
-      return res.status(500).json({
-        message:
-          err.message || 'Some error occurred while deleting a Category.',
-      })
-    }
-  }
-}
-
-const updateCategory = async (req: Request, res: Response) => {
-  const { id } = req.params
-  const { description, name, status } = req.body
-
-  try {
-    const category = await Category.findOne({ _id: id })
-    if (!category) {
-      return res
-        .status(404)
-        .json({ message: `Category with id "${id}" not found.` })
+    const categoryObj = await Category.findOne({ _id: id });
+    if (!categoryObj) {
+      throw new ResourceNotFoundError("Category not found");
     }
 
     const categoryInput: CategoryInput = {
       name,
       description,
+    };
+
+    if (typeof status != "undefined") {
+      categoryInput.status = status;
     }
 
-    if (typeof status != 'undefined') {
-      categoryInput.status = status
-    }
-
-    await Category.updateOne({ _id: id }, categoryInput)
-    const categoryUpdated = await Category.findById(id)
-    return res.status(200).json(categoryUpdated)
-  } catch (err) {
-    if (err instanceof Error) {
-      return res.status(500).json({
-        message:
-          err.message || 'Some error occurred while updating a Category.',
-      })
-    }
+    await Category.updateOne({ _id: id }, categoryInput);
+    return Category.findById(id);
   }
-}
-export {
-  getAllCategory,
-  createCategory,
-  getCategory,
-  deleteCategory,
-  updateCategory,
+
+  @Delete("/category/{id}")
+  public async deleteCategory(
+    @Path("id") id: string
+  ): Promise<ICategory | null> {
+    const category = await Category.findByIdAndDelete(id);
+    if (!category) {
+      throw new ResourceNotFoundError("Category not found to delete");
+    }
+    return category;
+  }
 }

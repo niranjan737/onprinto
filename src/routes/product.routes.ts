@@ -1,80 +1,114 @@
-import { Router } from 'express'
+import { Router, Request, Response } from "express";
 
-import { validate } from '../middleware/CommonController.validate'
-import { ProductaddValidationRules } from '../middleware/ProductController.validate'
+import { validate } from "../middleware/CommonController.validate";
+import { ProductaddValidationRules } from "../middleware/ProductController.validate";
 
-import {
-  getAllProduct,
-  createProduct,
-  getProduct,
-  deleteProduct,
-  updateProduct,
-} from '../controllers/product.controller'
+import { ProductController } from "../controllers/product.controller";
 
-const router = Router()
+const router = Router();
 
-/**
- * @swagger
- * /api/admin/products:
- *   get:
- *     summary: Retrieve a list of product
- *     description: Retrieve a list of product.
- *     responses:
- *       200:
- *         description: A list of products.
- */
-router.get('/admin/products', getAllProduct)
+router.get("/admin/products", async (_req, res, next) => {
+  const controller = new ProductController();
+
+  try {
+    const response = await controller.getAllProduct();
+    return res.json(response);
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.post(
-  '/admin/product',
+  "/admin/product",
   ProductaddValidationRules(),
   validate,
-  createProduct
-)
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new ProductController();
+    const {
+      description,
+      name,
+      status,
+      size,
+      price,
+      offerPrice,
+      deliveryPrice,
+    } = req.body;
+    try {
+      const response = await controller.createProduct({
+        description,
+        name,
+        status,
+        size,
+        price,
+        offerPrice,
+        deliveryPrice,
+      });
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
-/**
- * @swagger
- * /api/admin/product/{id}:
- *   get:
- *     summary: Retrieve a  product
- *     description: Retrieve a product.
- *     responses:
- *       200:
- *         description: A product.
- */
-router.get('/admin/product/:id', getProduct)
+router.get(
+  "/admin/product/:id",
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new ProductController();
+    const { id } = req.params;
+    try {
+      const response = await controller.getProduct(id);
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 router.put(
-  '/admin/product/:id',
+  "/admin/product/:id",
   ProductaddValidationRules(),
   validate,
-  updateProduct
-)
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new ProductController();
+    const { id } = req.params;
+    const {
+      description,
+      name,
+      status,
+      size,
+      price,
+      offerPrice,
+      deliveryPrice,
+    } = req.body;
+    try {
+      const response = await controller.updateProduct(id, {
+        description,
+        name,
+        status,
+        size,
+        price,
+        offerPrice,
+        deliveryPrice,
+      });
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
-router.delete('/admin/product/:id', deleteProduct)
+router.delete(
+  "/admin/product/:id",
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new ProductController();
+    const { id } = req.params;
+    try {
+      const response = await controller.deleteProduct(id);
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
-/**
- * @swagger
- * /api/products:
- *   get:
- *     summary: Retrieve a list of products
- *     description: Retrieve a list of products.
- *     responses:
- *       200:
- *         description: A list of product.
- */
-router.get('/products', getAllProduct)
-
-/**
- * @swagger
- * /api/product/{id}:
- *   get:
- *     summary: Retrieve a product
- *     description: Retrieve a product.
- *     responses:
- *       200:
- *         description: A product.
- */
-router.get('/admin/:id', getProduct)
-
-export default router
+export default router;

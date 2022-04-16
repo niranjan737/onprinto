@@ -1,118 +1,90 @@
-import { Router } from 'express'
+import { Router, Request, Response } from "express";
 
-import { validate } from '../middleware/CommonController.validate'
-import { CategoryaddValidationRules } from '../middleware/CategoryController.validate'
+import { validate } from "../middleware/CommonController.validate";
+import { CategoryaddValidationRules } from "../middleware/CategoryController.validate";
 
-import {
-  getAllCategory,
-  createCategory,
-  getCategory,
-  deleteCategory,
-  updateCategory,
-} from '../controllers/category.controller'
+import { CategoryController } from "../controllers/category.controller";
 
-const router = Router()
+const router = Router();
 
-/**
- * @swagger
- * /api/admin/categories:
- *   get:
- *     summary: Retrieve a list of categories
- *     description: Retrieve a list of categories.
- *     responses:
- *       200:
- *         description: A list of categories.
- */
-// router.get('/admin/categories', getAllCategory)
+router.get("/admin/categories", async (_req, res, next) => {
+  const controller = new CategoryController();
 
-/**
- * @swagger
- * /api/admin/category:
- *   post:
- *     summary: Create a Category.
- *     produces:
- *       - application/json
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: The user's name.
- *                 example: Leanne Graham
- * description:
- *                 type: string
- *                 description: The user's name.
- *                 example: Leanne Graham
- *     responses:
- *       201:
- *         description: Created
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 data:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                       description: The user ID.
- *                       example: 0
- *                     name:
- *                       type: string
- *                       description: The user's name.
- *                       example: Leanne Graham
- */
+  try {
+    const response = await controller.getAllCategory();
+    return res.json(response);
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post(
-  '/admin/category',
+  "/admin/category",
   CategoryaddValidationRules(),
   validate,
-  createCategory
-)
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new CategoryController();
+    const { description, name, status } = req.body;
+    try {
+      const response = await controller.createCategory({
+        description,
+        name,
+        status,
+      });
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
-/**
- * @swagger
- * /api/admin/category/{id}:
- *   get:
- *     summary: Retrieve a  category
- *     description: Retrieve a ategory.
- *     responses:
- *       200:
- *         description: A category.
- */
-router.get('/admin/category/:id', getCategory)
+router.get(
+  "/admin/category/:id",
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new CategoryController();
+    const { id } = req.params;
+    try {
+      const response = await controller.getCategory(id);
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 router.put(
-  '/admin/category/:id',
+  "/admin/category/:id",
   CategoryaddValidationRules(),
   validate,
-  updateCategory
-)
-
-router.delete('/admin/category/:id', deleteCategory)
-
-/**
- * @swagger
- * /api/categories:
- *   get:
- *     summary: Retrieve a list of categories
- *     description: Retrieve a list of categories.
- *     responses:
- *       200:
- *         description: A list of categories.
- */
-
-router.get('/admin/categories', async (req, res, next) => {
-  try {
-    let emailFetch = await getAllCategory(req, res)
-    res.send(emailFetch)
-  } catch (err) {
-    next(err)
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new CategoryController();
+    const { id } = req.params;
+    const { description, name, status } = req.body;
+    try {
+      const response = await controller.updateCategory(id, {
+        description,
+        name,
+        status,
+      });
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
   }
-})
+);
 
-export default router
+router.delete(
+  "/admin/category/:id",
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new CategoryController();
+    const { id } = req.params;
+    try {
+      const response = await controller.deleteCategory(id);
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+export default router;

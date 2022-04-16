@@ -1,137 +1,123 @@
-import { Request, Response } from 'express'
-import { Product, ProductInput } from '../models/product.model'
+import { Request, Response } from "express";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Path,
+  Post,
+  Put,
+  Route,
+  Tags,
+} from "tsoa";
 
-const getAllProduct = async (req: Request, res: Response) => {
-  const products = await Product.find().sort('-createdAt').exec()
+import { Product, ProductInput, IProduct } from "../models/product.model";
+import { ResourceNotFoundError } from "../models/error.model";
 
-  return res.status(200).json({ data: products })
-}
+@Route("/api/admin")
+@Tags("Admin")
+export class ProductController extends Controller {
+  @Get("/products")
+  public async getAllProduct(): Promise<IProduct[]> {
+    const products = Product.find().sort("-createdAt").exec();
+    return products;
+  }
+  @Post("/product")
+  public async createProduct(@Body() product: ProductInput): Promise<IProduct> {
+    const {
+      description,
+      name,
+      status,
+      size,
+      price,
+      offerPrice,
+      deliveryPrice,
+    } = product;
 
-const createProduct = async (req: Request, res: Response) => {
-  const { description, name, status, size, price, offerPrice, deliveryPrice } =
-    req.body
+    const productInput: ProductInput = {
+      name,
+      description,
+    };
 
-  const productInput: ProductInput = {
-    name,
-    description,
-  }
-
-  if (typeof status != 'undefined') {
-    productInput.status = status
-  }
-  if (typeof size != 'undefined') {
-    productInput.size = size
-  }
-  if (typeof price != 'undefined') {
-    productInput.price = price
-  }
-  if (typeof offerPrice != 'undefined') {
-    productInput.offerPrice = offerPrice
-  }
-  if (typeof deliveryPrice != 'undefined') {
-    productInput.deliveryPrice = deliveryPrice
-  }
-
-  try {
-    const productCreated = await Product.create(productInput)
-    return res.status(201).json(productCreated)
-  } catch (err) {
-    if (err instanceof Error) {
-      return res.status(500).json({
-        message: err.message || 'Some error occurred while adding a Product.',
-      })
+    if (typeof status != "undefined") {
+      productInput.status = status;
     }
+    if (typeof size != "undefined") {
+      productInput.size = size;
+    }
+    if (typeof price != "undefined") {
+      productInput.price = price;
+    }
+    if (typeof offerPrice != "undefined") {
+      productInput.offerPrice = offerPrice;
+    }
+    if (typeof deliveryPrice != "undefined") {
+      productInput.deliveryPrice = deliveryPrice;
+    }
+
+    return Product.create(productInput);
   }
-}
 
-const getProduct = async (req: Request, res: Response) => {
-  const { id } = req.params
-
-  try {
-    const product = await Product.findOne({ _id: id })
+  @Get("/product/{id}")
+  public async getProduct(@Path("id") id: string): Promise<IProduct | null> {
+    const product = await Product.findOne({ _id: id });
     if (!product) {
-      return res
-        .status(404)
-        .json({ message: `Product with id "${id}" not found.` })
+      throw new ResourceNotFoundError("Product not found");
     }
-    return res.status(200).json(product)
-  } catch (err) {
-    if (err instanceof Error) {
-      return res.status(500).json({
-        message: err.message || 'Some error occurred while getting a Product.',
-      })
-    }
+    return product;
   }
-}
 
-const deleteProduct = async (req: Request, res: Response) => {
-  const { id } = req.params
+  @Put("/product/{id}")
+  public async updateProduct(
+    @Path("id") id: string,
+    @Body() product: ProductInput
+  ): Promise<IProduct | null> {
+    const {
+      description,
+      name,
+      status,
+      size,
+      price,
+      offerPrice,
+      deliveryPrice,
+    } = product;
 
-  try {
-    await Product.findByIdAndDelete(id)
-    return res.status(200).json({ message: 'Category deleted successfully.' })
-  } catch (err) {
-    if (err instanceof Error) {
-      return res.status(500).json({
-        message: err.message || 'Some error occurred while deleting a Product.',
-      })
-    }
-  }
-}
-
-const updateProduct = async (req: Request, res: Response) => {
-  const { id } = req.params
-  const { description, name, status, size, price, offerPrice, deliveryPrice } =
-    req.body
-
-  try {
-    const product = await Product.findOne({ _id: id })
-    if (!product) {
-      return res
-        .status(404)
-        .json({ message: `Product with id "${id}" not found.` })
+    const productObj = await Product.findOne({ _id: id });
+    if (!productObj) {
+      throw new ResourceNotFoundError("Product not found");
     }
 
     const productInput: ProductInput = {
       name,
       description,
+    };
+
+    if (typeof status != "undefined") {
+      productInput.status = status;
+    }
+    if (typeof size != "undefined") {
+      productInput.size = size;
+    }
+    if (typeof price != "undefined") {
+      productInput.price = price;
+    }
+    if (typeof offerPrice != "undefined") {
+      productInput.offerPrice = offerPrice;
+    }
+    if (typeof deliveryPrice != "undefined") {
+      productInput.deliveryPrice = deliveryPrice;
     }
 
-    if (typeof status != 'undefined') {
-      productInput.status = status
-    }
-    if (typeof size != 'undefined') {
-      productInput.size = size
-    }
-    if (typeof price != 'undefined') {
-      productInput.price = price
-    }
-    if (typeof offerPrice != 'undefined') {
-      productInput.offerPrice = offerPrice
-    }
-    if (typeof deliveryPrice != 'undefined') {
-      productInput.deliveryPrice = deliveryPrice
-    }
-
-    if (typeof status != 'undefined') {
-      productInput.status = status
-    }
-
-    await Product.updateOne({ _id: id }, productInput)
-    const categoryUpdated = await Product.findById(id)
-    return res.status(200).json(categoryUpdated)
-  } catch (err) {
-    if (err instanceof Error) {
-      return res.status(500).json({
-        message: err.message || 'Some error occurred while updating a Product.',
-      })
-    }
+    await Product.updateOne({ _id: id }, productInput);
+    return Product.findById(id);
   }
-}
-export {
-  getAllProduct,
-  createProduct,
-  getProduct,
-  deleteProduct,
-  updateProduct,
+
+  @Delete("/product/{id}")
+  public async deleteProduct(@Path("id") id: string): Promise<IProduct | null> {
+    const product = await Product.findByIdAndDelete(id);
+    if (!product) {
+      throw new ResourceNotFoundError("Product not found to delete");
+    }
+    return product;
+  }
 }

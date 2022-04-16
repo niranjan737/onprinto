@@ -1,6 +1,6 @@
 const config = {
-  dbUrl: 'mongodb://localhost:27017/onprinto',
-  secret: 'xyzabc',
-}
+  dbUrl: "mongodb://localhost:27017/onprinto",
+  secret: "xyzabc",
+};
 
-export { config }
+export { config };

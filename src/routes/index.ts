@@ -1,12 +1,10 @@
-import { Router } from 'express'
-import categoryRouter from './category.routes'
-import productRouter from './product.routes'
-import pingRouter from './ping.routes'
+import { Router } from "express";
+import categoryRouter from "./category.routes";
+import productRouter from "./product.routes";
 
-const routes = Router()
+const routes = Router();
 
-routes.use(categoryRouter)
-routes.use(productRouter)
-routes.use(pingRouter)
+routes.use(categoryRouter);
+routes.use(productRouter);
 
-export default routes
+export default routes;

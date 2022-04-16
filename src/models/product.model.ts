@@ -1,22 +1,28 @@
-import { Schema, model, Model } from 'mongoose'
+import { Schema, model, Model } from "mongoose";
 
 type ProductInput = {
-  name: string
-  description?: string | null
-  details?: string | null
-  size?: string[]
-  image?: String[]
-  status?: number
-  price?: number
-  offerPrice?: number
-  deliveryPrice?: number
+  name: string;
+  description?: string | null;
+  details?: string | null;
+  size?: string[];
+  image?: String[];
+  status?: number;
+  price?: number;
+  offerPrice?: number;
+  deliveryPrice?: number;
+};
+
+interface IProduct extends ProductInput {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const ProductSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, 'A Product must have a name'],
+      required: [true, "A Product must have a name"],
     },
     description: String,
     size: {
@@ -42,9 +48,6 @@ const ProductSchema = new Schema(
   {
     timestamps: true,
   }
-)
-const Product: Model<ProductInput> = model<ProductInput>(
-  'product',
-  ProductSchema
-)
-export { Product, ProductInput }
+);
+const Product: Model<IProduct> = model<IProduct>("product", ProductSchema);
+export { Product, ProductInput, IProduct };
