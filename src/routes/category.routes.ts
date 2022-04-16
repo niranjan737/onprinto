@@ -23,21 +23,27 @@ const router = Router()
  *       200:
  *         description: A list of categories.
  */
-router.get('/admin/categories', getAllCategory)
+// router.get('/admin/categories', getAllCategory)
 
 /**
  * @swagger
  * /api/admin/category:
  *   post:
- *     summary: Create a JSONPlaceholder user.
+ *     summary: Create a Category.
+ *     produces:
+ *       - application/json
  *     requestBody:
  *       required: true
  *       content:
- *         application/x-www-form-urlencoded:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
  *               name:
+ *                 type: string
+ *                 description: The user's name.
+ *                 example: Leanne Graham
+ * description:
  *                 type: string
  *                 description: The user's name.
  *                 example: Leanne Graham
@@ -99,6 +105,14 @@ router.delete('/admin/category/:id', deleteCategory)
  *       200:
  *         description: A list of categories.
  */
-router.get('/categories', getAllCategory)
+
+router.get('/admin/categories', async (req, res, next) => {
+  try {
+    let emailFetch = await getAllCategory(req, res)
+    res.send(emailFetch)
+  } catch (err) {
+    next(err)
+  }
+})
 
 export default router

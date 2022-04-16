@@ -1,10 +1,16 @@
-import { Schema, model, Model } from 'mongoose'
+import { Schema, model, Model, ObjectId } from 'mongoose'
 
 type CategoryInput = {
   name: string
   description?: string | null
   image?: String | null
   status?: number
+}
+
+interface ICategory extends CategoryInput {
+  _id: string
+  createdAt: Date
+  updatedAt: Date
 }
 
 const CategorySchema = new Schema(
@@ -24,8 +30,5 @@ const CategorySchema = new Schema(
     timestamps: true,
   }
 )
-const Category: Model<CategoryInput> = model<CategoryInput>(
-  'category',
-  CategorySchema
-)
-export { Category, CategoryInput }
+const Category: Model<ICategory> = model<ICategory>('category', CategorySchema)
+export { Category, CategoryInput, ICategory }

@@ -1,9 +1,10 @@
 import { Request, Response } from 'express'
 import { Category, CategoryInput } from '../models/category.model'
+import { CustomError, ResourceNotFoundError } from '../models/error.model'
 
 const getAllCategory = async (req: Request, res: Response) => {
   const categories = await Category.find().sort('-createdAt').exec()
-
+  // throw new ResourceNotFoundError('Not Found 123')
   return res.status(200).json({ data: categories })
 }
 
