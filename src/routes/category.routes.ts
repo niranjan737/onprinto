@@ -4,6 +4,7 @@ import { validate } from "../middleware/CommonController.validate";
 import { CategoryaddValidationRules } from "../middleware/CategoryController.validate";
 
 import { CategoryController } from "../controllers/category.controller";
+import { upload } from "../middleware/ImageUpoloadController";
 
 const router = Router();
 
@@ -20,6 +21,7 @@ router.get("/admin/categories", async (_req, res, next) => {
 
 router.post(
   "/admin/category",
+  upload.single("image"),
   CategoryaddValidationRules(),
   validate,
   async (req: Request, res: Response, next: Function) => {
