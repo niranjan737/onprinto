@@ -27,7 +27,9 @@ export class ProductController extends Controller {
     const {
       description,
       name,
+      category,
       status,
+      available,
       size,
       price,
       offerPrice,
@@ -39,8 +41,14 @@ export class ProductController extends Controller {
       description,
     };
 
+    if (typeof category != "undefined") {
+      productInput.category = category;
+    }
     if (typeof status != "undefined") {
       productInput.status = status;
+    }
+    if (typeof available != "undefined") {
+      productInput.available = available;
     }
     if (typeof size != "undefined") {
       productInput.size = size;
@@ -74,8 +82,10 @@ export class ProductController extends Controller {
   ): Promise<IProduct | null> {
     const {
       description,
+      category,
       name,
       status,
+      available,
       size,
       price,
       offerPrice,
@@ -92,8 +102,14 @@ export class ProductController extends Controller {
       description,
     };
 
+    if (typeof category != "undefined") {
+      productInput.category = category;
+    }
     if (typeof status != "undefined") {
       productInput.status = status;
+    }
+    if (typeof available != "undefined") {
+      productInput.available = available;
     }
     if (typeof size != "undefined") {
       productInput.size = size;

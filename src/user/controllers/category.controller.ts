@@ -8,7 +8,8 @@ import { Category, ICategory } from "../../models/category.model";
 export class CategoryController extends Controller {
   @Get("/categories")
   public async getAllCategory(): Promise<ICategory[]> {
-    const categories = Category.find().sort("-createdAt").exec();
+    const query = { status: 1 };
+    const categories = Category.find(query).sort("-createdAt").exec();
     return categories;
   }
 

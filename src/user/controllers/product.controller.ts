@@ -8,7 +8,8 @@ import { ResourceNotFoundError } from "../../models/error.model";
 export class ProductController extends Controller {
   @Get("/products")
   public async getAllProduct(): Promise<IProduct[]> {
-    const products = Product.find().sort("-createdAt").exec();
+    const query = { status: 1 };
+    const products = Product.find(query).sort("-createdAt").exec();
     return products;
   }
 

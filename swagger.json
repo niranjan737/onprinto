@@ -16,7 +16,7 @@
 						"type": "string",
 						"nullable": true
 					},
-					"description": {
+					"parentId": {
 						"type": "string",
 						"nullable": true
 					},
@@ -24,6 +24,9 @@
 						"type": "string"
 					},
 					"_id": {
+						"type": "string"
+					},
+					"slug": {
 						"type": "string"
 					},
 					"createdAt": {
@@ -38,6 +41,7 @@
 				"required": [
 					"name",
 					"_id",
+					"slug",
 					"createdAt",
 					"updatedAt"
 				],
@@ -54,7 +58,7 @@
 						"type": "string",
 						"nullable": true
 					},
-					"description": {
+					"parentId": {
 						"type": "string",
 						"nullable": true
 					},
@@ -69,6 +73,10 @@
 			},
 			"IProduct": {
 				"properties": {
+					"available": {
+						"type": "number",
+						"format": "double"
+					},
 					"deliveryPrice": {
 						"type": "number",
 						"format": "double"
@@ -98,6 +106,10 @@
 						"type": "array"
 					},
 					"details": {
+						"type": "string",
+						"nullable": true
+					},
+					"category": {
 						"type": "string",
 						"nullable": true
 					},
@@ -131,6 +143,10 @@
 			},
 			"ProductInput": {
 				"properties": {
+					"available": {
+						"type": "number",
+						"format": "double"
+					},
 					"deliveryPrice": {
 						"type": "number",
 						"format": "double"
@@ -160,6 +176,10 @@
 						"type": "array"
 					},
 					"details": {
+						"type": "string",
+						"nullable": true
+					},
+					"category": {
 						"type": "string",
 						"nullable": true
 					},

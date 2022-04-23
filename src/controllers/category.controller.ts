@@ -1,5 +1,3 @@
-import { Request, Response } from "express";
-
 import {
   Body,
   Controller,
@@ -8,13 +6,12 @@ import {
   Path,
   Post,
   Put,
-  Query,
   Route,
-  SuccessResponse,
   Tags,
 } from "tsoa";
+import slugify from "slugify";
 
-import { CustomError, ResourceNotFoundError } from "../models/error.model";
+import { ResourceNotFoundError } from "../models/error.model";
 import { Category, CategoryInput, ICategory } from "../models/category.model";
 
 @Route("/api/admin")
@@ -29,15 +26,18 @@ export class CategoryController extends Controller {
   public async createCategory(
     @Body() category: CategoryInput
   ): Promise<ICategory> {
-    const { description, name, status } = category;
-
-    const categoryInput: CategoryInput = {
+    const { name, parentId, status } = category;
+    const categoryInput = {
       name,
-      description,
-    };
+      slug: slugify(name, { lower: true }),
+    } as CategoryInput;
 
     if (typeof status != "undefined") {
       categoryInput.status = status;
+    }
+
+    if (typeof parentId != "undefined") {
+      categoryInput.parentId = parentId;
     }
 
     return Category.create(categoryInput);
@@ -57,17 +57,21 @@ export class CategoryController extends Controller {
     @Path("id") id: string,
     @Body() category: CategoryInput
   ): Promise<ICategory | null> {
-    const { description, name, status } = category;
+    const { name, parentId, status } = category;
 
     const categoryObj = await Category.findOne({ _id: id });
     if (!categoryObj) {
       throw new ResourceNotFoundError("Category not found");
     }
 
-    const categoryInput: CategoryInput = {
+    const categoryInput = {
       name,
-      description,
-    };
+      slug: slugify(name, { lower: true }),
+    } as CategoryInput;
+
+    if (typeof parentId != "undefined") {
+      categoryInput.parentId = parentId;
+    }
 
     if (typeof status != "undefined") {
       categoryInput.status = status;

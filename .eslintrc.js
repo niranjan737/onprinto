@@ -18,5 +18,8 @@ module.exports = {
     "comma-dangle": 0,
     "prettier/prettier": "error",
     "react/jsx-filename-extension": [1, { extensions: [".js", ".jsx"] }],
+    "avoidEscape": true,
+    "allowTemplateLiterals": true
+
   },
 };
