@@ -29,7 +29,6 @@ router.post(
     const { description, name, status } = req.body;
     try {
       const response = await controller.createCategory({
-        description,
         name,
         status,
       });
@@ -61,10 +60,9 @@ router.put(
   async (req: Request, res: Response, next: Function) => {
     const controller = new CategoryController();
     const { id } = req.params;
-    const { description, name, status } = req.body;
+    const { name, status } = req.body;
     try {
       const response = await controller.updateCategory(id, {
-        description,
         name,
         status,
       });

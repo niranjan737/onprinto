@@ -27,6 +27,8 @@ router.post(
     const {
       description,
       name,
+      category,
+      available,
       status,
       size,
       price,
@@ -37,6 +39,8 @@ router.post(
       const response = await controller.createProduct({
         description,
         name,
+        category,
+        available,
         status,
         size,
         price,
@@ -74,6 +78,8 @@ router.put(
     const {
       description,
       name,
+      category,
+      available,
       status,
       size,
       price,
@@ -84,6 +90,8 @@ router.put(
       const response = await controller.updateProduct(id, {
         description,
         name,
+        category,
+        available,
         status,
         size,
         price,
