@@ -2,8 +2,9 @@ import { Schema, model, Model, ObjectId } from "mongoose";
 
 type CategoryInput = {
   name: string;
-  parentId?: String | null;
-  image?: String | null;
+  description?: string | null;
+  parentId?: string | null;
+  image?: string | null;
   status?: number;
 };
 
@@ -20,6 +21,7 @@ const CategorySchema = new Schema(
       type: String,
       required: [true, "A Category must have a name"],
     },
+    description: String,
     image: String,
     status: {
       type: Number,

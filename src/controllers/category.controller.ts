@@ -26,11 +26,15 @@ export class CategoryController extends Controller {
   public async createCategory(
     @Body() category: CategoryInput
   ): Promise<ICategory> {
-    const { name, parentId, status } = category;
+    const { name, description, parentId, status } = category;
     const categoryInput = {
       name,
       slug: slugify(name, { lower: true }),
     } as CategoryInput;
+
+    if (typeof description != "undefined") {
+      categoryInput.description = description;
+    }
 
     if (typeof status != "undefined") {
       categoryInput.status = status;
@@ -57,7 +61,7 @@ export class CategoryController extends Controller {
     @Path("id") id: string,
     @Body() category: CategoryInput
   ): Promise<ICategory | null> {
-    const { name, parentId, status } = category;
+    const { name, description, parentId, status } = category;
 
     const categoryObj = await Category.findOne({ _id: id });
     if (!categoryObj) {
@@ -68,6 +72,10 @@ export class CategoryController extends Controller {
       name,
       slug: slugify(name, { lower: true }),
     } as CategoryInput;
+
+    if (typeof description != "undefined") {
+      categoryInput.description = description;
+    }
 
     if (typeof parentId != "undefined") {
       categoryInput.parentId = parentId;

@@ -26,12 +26,8 @@ router.post(
   validate,
   async (req: Request, res: Response, next: Function) => {
     const controller = new CategoryController();
-    const { description, name, status } = req.body;
     try {
-      const response = await controller.createCategory({
-        name,
-        status,
-      });
+      const response = await controller.createCategory(req.body);
       return res.json(response);
     } catch (err) {
       next(err);
@@ -60,12 +56,8 @@ router.put(
   async (req: Request, res: Response, next: Function) => {
     const controller = new CategoryController();
     const { id } = req.params;
-    const { name, status } = req.body;
     try {
-      const response = await controller.updateCategory(id, {
-        name,
-        status,
-      });
+      const response = await controller.updateCategory(id, req.body);
       return res.json(response);
     } catch (err) {
       next(err);

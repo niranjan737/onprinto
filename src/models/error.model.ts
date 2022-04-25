@@ -19,4 +19,12 @@ class ResourceNotFoundError extends CustomError {
   }
 }
 
-export { CustomError, ResourceNotFoundError };
+class ValidationFailedError extends CustomError {
+  constructor(message: string) {
+    super(message);
+    this.message = message;
+    this.status = 422;
+  }
+}
+
+export { CustomError, ResourceNotFoundError, ValidationFailedError };
