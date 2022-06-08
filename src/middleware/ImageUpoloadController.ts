@@ -1,4 +1,5 @@
 import multer from "multer";
+import fs from "fs";
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -29,7 +30,13 @@ const upload = multer({
 
 const productImageStorage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, "uploads/product");
+    const dir = "uploads/product";
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+    callback(null, dir);
+    callback(null, dir);
   },
   filename: function (req, file, callback) {
     callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
@@ -40,7 +47,12 @@ const productImageUpload = multer({ storage: productImageStorage });
 
 const categoryImageStorage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, "uploads/category");
+    const dir = "uploads/category";
+
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+    callback(null, dir);
   },
   filename: function (req, file, callback) {
     callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
