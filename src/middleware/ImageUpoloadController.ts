@@ -48,8 +48,4 @@ const categoryImageStorage = multer.diskStorage({
 });
 const categoryImageUpload = multer({ storage: categoryImageStorage });
 
-module.exports = {
-  upload,
-  productImageUpload,
-  categoryImageUpload,
-};
+export { upload, productImageUpload, categoryImageUpload };
