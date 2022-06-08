@@ -6,7 +6,7 @@ type ProductInput = {
   category?: string | null;
   details?: string | null;
   size?: string[];
-  image?: String[];
+  image?: String;
   status?: number;
   price?: number;
   offerPrice?: number;
@@ -34,7 +34,7 @@ const ProductSchema = new Schema(
       type: Array,
     },
     image: {
-      type: Array,
+      type: String,
     },
     available: {
       type: Number,

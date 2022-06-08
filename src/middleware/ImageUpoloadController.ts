@@ -1,7 +1,7 @@
 import multer from "multer";
 
 const storage = multer.diskStorage({
-  destination: function (req, file: Express.Multer.File, callback) {
+  destination: function (req, file, callback) {
     callback(null, "uploads");
   },
   filename: function (req, file, callback) {
@@ -27,14 +27,29 @@ const upload = multer({
   },
 });
 
-const product_image_storage = multer.diskStorage({
+const productImageStorage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, "uploads");
+    callback(null, "uploads/product");
   },
   filename: function (req, file, callback) {
     callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
   },
 });
-const product_image_upload = multer({ storage: product_image_storage });
 
-export { upload, product_image_upload };
+const productImageUpload = multer({ storage: productImageStorage });
+
+const categoryImageStorage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "uploads/category");
+  },
+  filename: function (req, file, callback) {
+    callback(null, file.fieldname + "_" + Date.now() + "_" + file.originalname);
+  },
+});
+const categoryImageUpload = multer({ storage: categoryImageStorage });
+
+module.exports = {
+  upload,
+  productImageUpload,
+  categoryImageUpload,
+};

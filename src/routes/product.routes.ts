@@ -4,12 +4,12 @@ import { validate } from "../middleware/CommonController.validate";
 import { ProductaddValidationRules } from "../middleware/ProductController.validate";
 
 import { ProductController } from "../controllers/product.controller";
+const { productImageUpload } = require("../middleware/ImageUpoloadController");
 
 const router = Router();
 
 router.get("/admin/products", async (_req, res, next) => {
   const controller = new ProductController();
-
   try {
     const response = await controller.getAllProduct();
     return res.json(response);
@@ -47,6 +47,25 @@ router.post(
         offerPrice,
         deliveryPrice,
       });
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.put(
+  "/admin/product/:id/upload-image",
+  productImageUpload.single("image"),
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new ProductController();
+    const { id } = req.params;
+
+    try {
+      const response = await controller.uploadProductImage(
+        id,
+        (req.file && req.file.filename) || ""
+      );
       return res.json(response);
     } catch (err) {
       next(err);

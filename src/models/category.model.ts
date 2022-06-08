@@ -2,9 +2,9 @@ import { Schema, model, Model, ObjectId } from "mongoose";
 
 type CategoryInput = {
   name: string;
-  description?: string | null;
-  parentId?: string | null;
-  image?: string | null;
+  description?: string;
+  parentId?: string;
+  image?: string;
   status?: number;
 };
 

@@ -4,7 +4,7 @@ import { validate } from "../middleware/CommonController.validate";
 import { CategoryaddValidationRules } from "../middleware/CategoryController.validate";
 
 import { CategoryController } from "../controllers/category.controller";
-import { upload } from "../middleware/ImageUpoloadController";
+import { categoryImageUpload } from "../middleware/ImageUpoloadController";
 
 const router = Router();
 
@@ -21,13 +21,31 @@ router.get("/admin/categories", async (_req, res, next) => {
 
 router.post(
   "/admin/category",
-  upload.single("image"),
   CategoryaddValidationRules(),
   validate,
   async (req: Request, res: Response, next: Function) => {
     const controller = new CategoryController();
     try {
       const response = await controller.createCategory(req.body);
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.put(
+  "/admin/category/:id/upload-image",
+  categoryImageUpload.single("image"),
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new CategoryController();
+    const { id } = req.params;
+
+    try {
+      const response = await controller.uploadProductImage(
+        id,
+        (req.file && req.file.filename) || ""
+      );
       return res.json(response);
     } catch (err) {
       next(err);

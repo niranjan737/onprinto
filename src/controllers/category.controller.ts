@@ -8,10 +8,14 @@ import {
   Put,
   Route,
   Tags,
+  UploadedFile,
 } from "tsoa";
 import slugify from "slugify";
 
-import { ResourceNotFoundError } from "../models/error.model";
+import {
+  ResourceNotFoundError,
+  ValidationFailedError,
+} from "../models/error.model";
 import { Category, CategoryInput, ICategory } from "../models/category.model";
 
 @Route("/api/admin")
@@ -42,9 +46,32 @@ export class CategoryController extends Controller {
 
     if (typeof parentId != "undefined") {
       categoryInput.parentId = parentId;
+      const parentCategory = await this.getCategoryBySlug(parentId);
+      if (!parentCategory) {
+        throw new ValidationFailedError("Parent Category not found");
+      }
     }
 
     return Category.create(categoryInput);
+  }
+
+  @Put("/category/{id}/upload-image")
+  public async uploadProductImage(
+    @Path("id") id: string,
+    @UploadedFile() image: string
+  ): Promise<ICategory | null> {
+    const productObj = await Category.findOne({ _id: id });
+    if (!productObj) {
+      throw new ResourceNotFoundError("Category not found");
+    }
+
+    const categoryInput: CategoryInput = productObj;
+
+    if (typeof image != "undefined") {
+      categoryInput.image = image;
+    }
+    await Category.updateOne({ _id: id }, categoryInput);
+    return Category.findById(id);
   }
 
   @Get("/category/{id}")
@@ -79,6 +106,10 @@ export class CategoryController extends Controller {
 
     if (typeof parentId != "undefined") {
       categoryInput.parentId = parentId;
+      const parentCategory = await this.getCategoryBySlug(parentId);
+      if (!parentCategory) {
+        throw new ValidationFailedError("Parent Category not found");
+      }
     }
 
     if (typeof status != "undefined") {
@@ -98,5 +129,9 @@ export class CategoryController extends Controller {
       throw new ResourceNotFoundError("Category not found to delete");
     }
     return category;
+  }
+
+  public async getCategoryBySlug(slug: string): Promise<ICategory | null> {
+    return Category.findOne({ slug });
   }
 }

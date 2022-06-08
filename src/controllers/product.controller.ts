@@ -9,6 +9,7 @@ import {
   Put,
   Route,
   Tags,
+  UploadedFile,
 } from "tsoa";
 
 import { Product, ProductInput, IProduct } from "../models/product.model";
@@ -64,6 +65,25 @@ export class ProductController extends Controller {
     }
 
     return Product.create(productInput);
+  }
+
+  @Put("/product/{id}/upload-image")
+  public async uploadProductImage(
+    @Path("id") id: string,
+    @UploadedFile() image: string
+  ): Promise<IProduct | null> {
+    const productObj = await Product.findOne({ _id: id });
+    if (!productObj) {
+      throw new ResourceNotFoundError("Product not found");
+    }
+
+    const productInput: ProductInput = productObj;
+
+    if (typeof image != "undefined") {
+      productInput.image = image;
+    }
+    await Product.updateOne({ _id: id }, productInput);
+    return Product.findById(id);
   }
 
   @Get("/product/{id}")

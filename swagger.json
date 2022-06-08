@@ -13,16 +13,13 @@
 						"format": "double"
 					},
 					"image": {
-						"type": "string",
-						"nullable": true
+						"type": "string"
 					},
 					"parentId": {
-						"type": "string",
-						"nullable": true
+						"type": "string"
 					},
 					"description": {
-						"type": "string",
-						"nullable": true
+						"type": "string"
 					},
 					"name": {
 						"type": "string"
@@ -59,16 +56,13 @@
 						"format": "double"
 					},
 					"image": {
-						"type": "string",
-						"nullable": true
+						"type": "string"
 					},
 					"parentId": {
-						"type": "string",
-						"nullable": true
+						"type": "string"
 					},
 					"description": {
-						"type": "string",
-						"nullable": true
+						"type": "string"
 					},
 					"name": {
 						"type": "string"
@@ -102,10 +96,7 @@
 						"format": "double"
 					},
 					"image": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
+						"type": "string"
 					},
 					"size": {
 						"items": {
@@ -172,10 +163,7 @@
 						"format": "double"
 					},
 					"image": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
+						"type": "string"
 					},
 					"size": {
 						"items": {
@@ -271,6 +259,61 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/CategoryInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/admin/category/{id}/upload-image": {
+			"put": {
+				"operationId": "UploadProductImage",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/ICategory"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Admin"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"image": {
+										"type": "string",
+										"format": "binary"
+									}
+								},
+								"required": [
+									"image"
+								]
 							}
 						}
 					}
@@ -442,6 +485,61 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/ProductInput"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/admin/product/{id}/upload-image": {
+			"put": {
+				"operationId": "UploadProductImage",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/IProduct"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Admin"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"image": {
+										"type": "string",
+										"format": "binary"
+									}
+								},
+								"required": [
+									"image"
+								]
 							}
 						}
 					}
