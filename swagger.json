@@ -12,9 +12,6 @@
 						"type": "number",
 						"format": "double"
 					},
-					"image": {
-						"type": "string"
-					},
 					"parentId": {
 						"type": "string"
 					},
@@ -28,6 +25,9 @@
 						"type": "string"
 					},
 					"slug": {
+						"type": "string"
+					},
+					"image": {
 						"type": "string"
 					},
 					"createdAt": {
@@ -55,9 +55,6 @@
 						"type": "number",
 						"format": "double"
 					},
-					"image": {
-						"type": "string"
-					},
 					"parentId": {
 						"type": "string"
 					},
@@ -73,7 +70,7 @@
 				],
 				"type": "object"
 			},
-			"IProduct": {
+			"ProductOutput": {
 				"properties": {
 					"available": {
 						"type": "number",
@@ -94,9 +91,6 @@
 					"status": {
 						"type": "number",
 						"format": "double"
-					},
-					"image": {
-						"type": "string"
 					},
 					"size": {
 						"items": {
@@ -122,6 +116,9 @@
 					"_id": {
 						"type": "string"
 					},
+					"image": {
+						"type": "string"
+					},
 					"createdAt": {
 						"type": "string",
 						"format": "date-time"
@@ -129,6 +126,12 @@
 					"updatedAt": {
 						"type": "string",
 						"format": "date-time"
+					},
+					"images": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
 					}
 				},
 				"required": [
@@ -162,9 +165,6 @@
 						"type": "number",
 						"format": "double"
 					},
-					"image": {
-						"type": "string"
-					},
 					"size": {
 						"items": {
 							"type": "string"
@@ -191,6 +191,103 @@
 					"name"
 				],
 				"type": "object"
+			},
+			"IProduct": {
+				"properties": {
+					"available": {
+						"type": "number",
+						"format": "double"
+					},
+					"deliveryPrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"offerPrice": {
+						"type": "number",
+						"format": "double"
+					},
+					"price": {
+						"type": "number",
+						"format": "double"
+					},
+					"status": {
+						"type": "number",
+						"format": "double"
+					},
+					"size": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"details": {
+						"type": "string",
+						"nullable": true
+					},
+					"category": {
+						"type": "string",
+						"nullable": true
+					},
+					"description": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string"
+					},
+					"_id": {
+						"type": "string"
+					},
+					"image": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"name",
+					"_id",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IProductImage": {
+				"properties": {
+					"productId": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"_id": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"productId",
+					"name",
+					"_id",
+					"createdAt",
+					"updatedAt"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -444,7 +541,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/IProduct"
+										"$ref": "#/components/schemas/ProductOutput"
 									},
 									"type": "array"
 								}
@@ -468,7 +565,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/IProduct"
+									"$ref": "#/components/schemas/ProductOutput"
 								}
 							}
 						}
@@ -557,7 +654,7 @@
 								"schema": {
 									"allOf": [
 										{
-											"$ref": "#/components/schemas/IProduct"
+											"$ref": "#/components/schemas/ProductOutput"
 										}
 									],
 									"nullable": true
@@ -591,7 +688,7 @@
 								"schema": {
 									"allOf": [
 										{
-											"$ref": "#/components/schemas/IProduct"
+											"$ref": "#/components/schemas/ProductOutput"
 										}
 									],
 									"nullable": true
@@ -635,6 +732,76 @@
 								"schema": {
 									"allOf": [
 										{
+											"$ref": "#/components/schemas/ProductOutput"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Admin"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/admin/product/{id}/images": {
+			"get": {
+				"operationId": "GetProductImages",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/IProductImage"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Admin"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/admin/product/{id}/image": {
+			"post": {
+				"operationId": "UploadProductImages",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
 											"$ref": "#/components/schemas/IProduct"
 										}
 									],
@@ -652,6 +819,69 @@
 					{
 						"in": "path",
 						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"image": {
+										"type": "string",
+										"format": "binary"
+									}
+								},
+								"required": [
+									"image"
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/admin/product/{id}/image/{imageId}": {
+			"delete": {
+				"operationId": "DeleteProductImage",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"allOf": [
+										{
+											"$ref": "#/components/schemas/IProduct"
+										}
+									],
+									"nullable": true
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Admin"
+				],
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "path",
+						"name": "imageId",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -731,7 +961,7 @@
 							"application/json": {
 								"schema": {
 									"items": {
-										"$ref": "#/components/schemas/IProduct"
+										"$ref": "#/components/schemas/ProductOutput"
 									},
 									"type": "array"
 								}
@@ -757,7 +987,7 @@
 								"schema": {
 									"allOf": [
 										{
-											"$ref": "#/components/schemas/IProduct"
+											"$ref": "#/components/schemas/ProductOutput"
 										}
 									],
 									"nullable": true

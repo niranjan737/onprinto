@@ -4,13 +4,13 @@ type CategoryInput = {
   name: string;
   description?: string;
   parentId?: string;
-  image?: string;
   status?: number;
 };
 
 interface ICategory extends CategoryInput {
   _id: string;
   slug: string;
+  image?: string;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -65,7 +65,7 @@ export class CategoryController extends Controller {
       throw new ResourceNotFoundError("Category not found");
     }
 
-    const categoryInput: CategoryInput = productObj;
+    const categoryInput = productObj;
 
     if (typeof image != "undefined") {
       categoryInput.image = image;

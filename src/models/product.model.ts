@@ -6,7 +6,6 @@ type ProductInput = {
   category?: string | null;
   details?: string | null;
   size?: string[];
-  image?: String;
   status?: number;
   price?: number;
   offerPrice?: number;
@@ -16,8 +15,13 @@ type ProductInput = {
 
 interface IProduct extends ProductInput {
   _id: string;
+  image?: String;
   createdAt: Date;
   updatedAt: Date;
+}
+
+interface ProductOutput extends IProduct {
+  images?: string[];
 }
 
 const ProductSchema = new Schema(
@@ -59,4 +63,4 @@ const ProductSchema = new Schema(
   }
 );
 const Product: Model<IProduct> = model<IProduct>("product", ProductSchema);
-export { Product, ProductInput, IProduct };
+export { Product, ProductInput, IProduct, ProductOutput };

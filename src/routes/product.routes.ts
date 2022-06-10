@@ -138,4 +138,48 @@ router.delete(
   }
 );
 
+router.get("/admin/product/:id/images", async (req, res, next) => {
+  const controller = new ProductController();
+  const { id } = req.params;
+  try {
+    const response = await controller.getProductImages(id);
+    return res.json(response);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post(
+  "/admin/product/:id/image",
+  productImageUpload.single("image"),
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new ProductController();
+    const { id } = req.params;
+
+    try {
+      const response = await controller.uploadProductImages(
+        id,
+        (req.file && req.file.filename) || ""
+      );
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.delete(
+  "/admin/product/:id/image/:imageId",
+  async (req: Request, res: Response, next: Function) => {
+    const controller = new ProductController();
+    const { id, imageId } = req.params;
+    try {
+      const response = await controller.deleteProductImage(id, imageId);
+      return res.json(response);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 export default router;

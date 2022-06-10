@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 import {
   Body,
   Controller,
@@ -12,19 +13,41 @@ import {
   UploadedFile,
 } from "tsoa";
 
-import { Product, ProductInput, IProduct } from "../models/product.model";
+import {
+  Product,
+  ProductInput,
+  IProduct,
+  ProductOutput,
+} from "../models/product.model";
+import {
+  ProductImage,
+  IProductImage,
+  ProductImageInput,
+} from "../models/productImage.model";
 import { ResourceNotFoundError } from "../models/error.model";
 
 @Route("/api/admin")
 @Tags("Admin")
 export class ProductController extends Controller {
   @Get("/products")
-  public async getAllProduct(): Promise<IProduct[]> {
-    const products = Product.find().sort("-createdAt").exec();
+  public async getAllProduct(): Promise<ProductOutput[]> {
+    const products = Product.aggregate([
+      {
+        $lookup: {
+          from: "productimages",
+          localField: "_id",
+          foreignField: "productId",
+          as: "images",
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]).exec();
     return products;
   }
   @Post("/product")
-  public async createProduct(@Body() product: ProductInput): Promise<IProduct> {
+  public async createProduct(
+    @Body() product: ProductInput
+  ): Promise<ProductOutput> {
     const {
       description,
       name,
@@ -77,7 +100,7 @@ export class ProductController extends Controller {
       throw new ResourceNotFoundError("Product not found");
     }
 
-    const productInput: ProductInput = productObj;
+    const productInput = productObj;
 
     if (typeof image != "undefined") {
       productInput.image = image;
@@ -87,19 +110,33 @@ export class ProductController extends Controller {
   }
 
   @Get("/product/{id}")
-  public async getProduct(@Path("id") id: string): Promise<IProduct | null> {
-    const product = await Product.findOne({ _id: id });
-    if (!product) {
+  public async getProduct(
+    @Path("id") id: string
+  ): Promise<ProductOutput | null> {
+    const product = await Product.aggregate([
+      { $match: { _id: Types.ObjectId(id) } },
+      { $limit: 1 },
+      {
+        $lookup: {
+          from: "productimages",
+          localField: "_id",
+          foreignField: "productId",
+          as: "images",
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
+    if (!product.length) {
       throw new ResourceNotFoundError("Product not found");
     }
-    return product;
+    return product.length ? product[0] : null;
   }
 
   @Put("/product/{id}")
   public async updateProduct(
     @Path("id") id: string,
     @Body() product: ProductInput
-  ): Promise<IProduct | null> {
+  ): Promise<ProductOutput | null> {
     const {
       description,
       category,
@@ -149,11 +186,50 @@ export class ProductController extends Controller {
   }
 
   @Delete("/product/{id}")
-  public async deleteProduct(@Path("id") id: string): Promise<IProduct | null> {
+  public async deleteProduct(
+    @Path("id") id: string
+  ): Promise<ProductOutput | null> {
     const product = await Product.findByIdAndDelete(id);
     if (!product) {
       throw new ResourceNotFoundError("Product not found to delete");
     }
     return product;
+  }
+
+  @Get("/product/{id}/images")
+  public async getProductImages(
+    @Path("id") productId: string
+  ): Promise<IProductImage[]> {
+    const productImages = ProductImage.find({ productId: productId }).exec();
+    return productImages || [];
+  }
+
+  @Post("/product/{id}/image")
+  public async uploadProductImages(
+    @Path("id") productId: string,
+    @UploadedFile() image: string
+  ): Promise<IProduct | null> {
+    const productObj = await Product.findOne({ _id: productId });
+    if (!productObj) {
+      throw new ResourceNotFoundError("Product not found");
+    }
+
+    const productImageInput: ProductImageInput = {
+      name: image,
+      productId: productId,
+    };
+    return ProductImage.create(productImageInput);
+  }
+
+  @Delete("/product/{id}/image/{imageId}")
+  public async deleteProductImage(
+    @Path("id") productId: string,
+    @Path("imageId") imageId: string
+  ): Promise<IProduct | null> {
+    const image = await ProductImage.findByIdAndDelete(imageId);
+    if (!image) {
+      throw new ResourceNotFoundError("Image not found to delete");
+    }
+    return image;
   }
 }
