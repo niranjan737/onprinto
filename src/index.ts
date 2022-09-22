@@ -46,6 +46,7 @@ app.get("/", function (req, res) {
   res.json({ message: "successfully! Running" });
 });
 
+app.use("/public/images", express.static("uploads"));
 app.use(errorHandler);
 //The 404 Route (ALWAYS Keep this as the last route)
 app.get("/*", function (req, res) {
