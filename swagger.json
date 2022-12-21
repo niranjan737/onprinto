@@ -289,87 +289,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"IUser": {
-				"properties": {
-					"password": {
-						"type": "string"
-					},
-					"phone": {
-						"type": "string",
-						"nullable": true
-					},
-					"email": {
-						"type": "string",
-						"nullable": true
-					},
-					"lastName": {
-						"type": "string",
-						"nullable": true
-					},
-					"firstName": {
-						"type": "string"
-					},
-					"_id": {
-						"type": "string"
-					},
-					"status": {
-						"type": "number",
-						"format": "double"
-					},
-					"type": {
-						"type": "string"
-					},
-					"image": {
-						"type": "string"
-					},
-					"loginOtp": {
-						"type": "number",
-						"format": "double"
-					},
-					"otpExpireAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"createdAt": {
-						"type": "string",
-						"format": "date-time"
-					},
-					"updatedAt": {
-						"type": "string",
-						"format": "date-time"
-					}
-				},
-				"required": [
-					"_id",
-					"createdAt",
-					"updatedAt"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"UserInput": {
-				"properties": {
-					"password": {
-						"type": "string"
-					},
-					"phone": {
-						"type": "string",
-						"nullable": true
-					},
-					"email": {
-						"type": "string",
-						"nullable": true
-					},
-					"lastName": {
-						"type": "string",
-						"nullable": true
-					},
-					"firstName": {
-						"type": "string"
-					}
-				},
-				"type": "object"
-			},
 			"LoginUser": {
 				"properties": {
 					"_id": {
@@ -1193,38 +1112,6 @@
 						}
 					}
 				]
-			}
-		},
-		"/api/register": {
-			"post": {
-				"operationId": "Register",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/IUser"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Auth"
-				],
-				"security": [],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/UserInput"
-							}
-						}
-					}
-				}
 			}
 		},
 		"/api/verifyOtp": {

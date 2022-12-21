@@ -14,35 +14,35 @@ export const SECRET_KEY: Secret = process.env.SECRET_KEY || '';
 @Route("/api")
 @Tags("Auth")
 export class AuthController extends Controller {
-  @Post("/register")
-  public async register(@Body() user: UserInput): Promise<IUser> {
-    const {
-      firstName,
-      lastName,
-      email, 
-      phone,
-      password
-     } = user;
+  // @Post("/register")
+  // public async register(@Body() user: UserInput): Promise<IUser> {
+  //   const {
+  //     firstName,
+  //     lastName,
+  //     email, 
+  //     phone,
+  //     password
+  //    } = user;
  
-    const userInput: UserInput = {
-        password,
-        firstName,
-        lastName,
-        email, 
-        phone
-    }  
+  //   const userInput: UserInput = {
+  //       password,
+  //       firstName,
+  //       lastName,
+  //       email, 
+  //       phone
+  //   }  
 
-    try{
-      const user = await User.findOne({email:email});
-      if(user){
-        throw new CustomError('Email Id is already registered');
-      }
-      return User.create(userInput);
-    }catch(error){
-      console.log('Error while registering user')
-      throw error;
-    }
-  }
+  //   try{
+  //     const user = await User.findOne({email:email});
+  //     if(user){
+  //       throw new CustomError('Email Id is already registered');
+  //     }
+  //     return User.create(userInput);
+  //   }catch(error){
+  //     console.log('Error while registering user')
+  //     throw error;
+  //   }
+  // }
 
   @Post("/verifyOtp")
   public async verifyOtp(@Body() loginInput: verifyOtpInput): Promise<LoginResponse> {
