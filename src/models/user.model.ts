@@ -19,6 +19,10 @@ interface verifyOtpInput{
   otp?: number;
 }
 
+interface refreshTokenInput{
+  token: string;
+}
+
 interface IUser extends UserInput {
   _id: string;
   status?: number;
@@ -69,4 +73,4 @@ const UserSchema = new Schema(
   }
 );
 const User: Model<IUser> = model<IUser>("user", UserSchema);
-export { User, IUser, UserInput, LoginInput, verifyOtpInput };
+export { User, IUser, UserInput, LoginInput, verifyOtpInput, refreshTokenInput };

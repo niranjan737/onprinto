@@ -294,6 +294,9 @@
 					"_id": {
 						"type": "string"
 					},
+					"userId": {
+						"type": "string"
+					},
 					"firstName": {
 						"type": "string"
 					},
@@ -402,7 +405,7 @@
 			"name": "ISC"
 		},
 		"contact": {
-			"name": "Nranjan"
+			"name": "Niranjan"
 		}
 	},
 	"openapi": "3.0.0",

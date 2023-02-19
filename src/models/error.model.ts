@@ -19,12 +19,20 @@ class ResourceNotFoundError extends CustomError {
   }
 }
 
+class InvalidCredentialError extends CustomError {
+  constructor(message: string) {
+    super(message);
+    this.message = message;
+    this.status = 401;
+  }
+}
+
 class ValidationFailedError extends CustomError {
   constructor(message: string) {
     super(message);
     this.message = message;
-    this.status = 422;
+    this.status = 401;
   }
 }
 
-export { CustomError, ResourceNotFoundError, ValidationFailedError };
+export { CustomError, ResourceNotFoundError, ValidationFailedError, InvalidCredentialError };

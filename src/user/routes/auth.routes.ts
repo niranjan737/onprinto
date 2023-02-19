@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 
 import { AuthController } from "../controllers/auth.controller";
+import { auth, CustomRequest } from './../../middleware/AuthMiddleware'
 
 const router = Router();
 
@@ -27,6 +28,20 @@ router.post("/verifyOtp", async (req: Request, res: Response, next: Function) =>
     next(err);
   }
 });
+
+
+// router.post("/refreshToken", async (req: Request, res: Response, next: Function) => {
+//   const controller = new AuthController();
+
+//   try {
+//     const response = await controller.refreshToken(req.body);
+//     return res.json(response);
+//   } catch (err) {
+//     console.log('errr', err); 
+//     next(err);
+//   }
+// });
+
 
 
 router.post("/login", async (req: Request, res: Response, next: Function) => {

@@ -5,10 +5,12 @@ import { ProductaddValidationRules } from "../middleware/ProductController.valid
 
 import { ProductController } from "../controllers/product.controller";
 const { productImageUpload } = require("../middleware/ImageUpoloadController");
+import { auth } from './../middleware/AuthMiddleware'
+
 
 const router = Router();
 
-router.get("/admin/products", async (_req, res, next) => {
+router.get("/admin/products",auth, async (_req, res, next) => {
   const controller = new ProductController();
   try {
     const response = await controller.getAllProduct();

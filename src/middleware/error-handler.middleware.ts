@@ -17,7 +17,6 @@ function handleError(
   next: NextFunction
 ) {
   let customError = err;
-
   if (!(err instanceof CustomError)) {
     customError = new CustomError("Something went wrong");
   }

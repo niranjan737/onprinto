@@ -5,8 +5,8 @@ import jwt, { Secret } from 'jsonwebtoken';
 
 import { DataResponse, MessageResponse, LoginUser, LoginResponse } from './../../interfaces';
 
-import { User,IUser, UserInput, LoginInput , verifyOtpInput} from "../../models/user.model";
-import { ResourceNotFoundError, CustomError } from "../../models/error.model";
+import { User,IUser, UserInput, LoginInput , verifyOtpInput, refreshTokenInput} from "../../models/user.model";
+import { ResourceNotFoundError, CustomError, InvalidCredentialError } from "../../models/error.model";
 
 const userSelectAttribute = {fistName:1,lastName:1, image:1, phone:1, email:1, otpExpireAt:1};
 export const SECRET_KEY: Secret = process.env.SECRET_KEY || '';
@@ -50,20 +50,42 @@ export class AuthController extends Controller {
     const user = await User.findOne({$or:[{"email": email}, {"phone": phone}],  loginOtp:otp}).select(userSelectAttribute);
 
     if(!user){
-      throw new ResourceNotFoundError("Invalid username/OTP");
+      throw new InvalidCredentialError("Invalid username/OTP");
     }
 
     const otpExpireAt = new Date(user.otpExpireAt || '').getTime();
     const timeNow = new Date().getTime();
 
     if(!otpExpireAt || otpExpireAt < timeNow){
-      throw new ResourceNotFoundError("OTP has been Expired");
+      throw new InvalidCredentialError("OTP has been Expired");
     }
 
 
     let token = jwt.sign({firstName: user.firstName, userId: user._id, type:user.type, phone: user.phone, email: user.email},
       SECRET_KEY,
-      { expiresIn: '2 days' // expires in 2 days
+      { expiresIn: '30 days' // expires in 30 days
+      }
+    );
+
+    return { 
+      token: token,
+      user: user as LoginUser, 
+      status: 'SUCCESS', 
+      message:'Success'
+     };
+  }
+
+  public async refreshToken(refreshTokenInput: refreshTokenInput, user:IUser): Promise<LoginResponse> {
+    const { token:InputToken } = refreshTokenInput;
+    const userData = await User.findOne({"email": user.email}).select(userSelectAttribute);
+
+    if(!user){
+      throw new InvalidCredentialError("Invalid token");
+    }
+
+    let token = jwt.sign({firstName: user.firstName, userId: user._id, type:user.type, phone: user.phone, email: user.email},
+      SECRET_KEY,
+      { expiresIn: '30 days' // expires in 30 days
       }
     );
 
