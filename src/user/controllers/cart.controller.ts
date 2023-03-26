@@ -73,18 +73,22 @@ export class CartController extends Controller {
     return cart as ProductOutput[];
   }
 
-  @Delete("/cart/product/{id}")
+  @Delete("/cart/product/{productId}")
   public async deleteCartProduct(
-    @Path("id") id: string, user:LoginUser
+    @Path("productId") productId: string, user:LoginUser
   ): Promise<ICart | undefined | null> {
     const userId =  user?.userId;
 
-    const cart = await Cart.findOne({_id: id, userId: userId});
-    console.log('cart', cart);
-    if (!cart) {
-      throw new ResourceNotFoundError("Product not found to delete");
-    }else{
-      return await Cart.findByIdAndDelete((cart as any)?._id);
+    try{
+       const cart = await Cart.findOne({productId: productId, userId: userId});
+      if (!cart) {
+        throw new ResourceNotFoundError("Product not found to delete");
+      }else{
+        return await Cart.findByIdAndDelete((cart as any)?._id);
+      }
+    }catch(err){
+      console.log('err', err);
+      throw err;
     }
   }
 }

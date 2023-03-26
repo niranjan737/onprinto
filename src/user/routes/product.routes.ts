@@ -63,12 +63,12 @@ router.post(
 );
 
 router.delete(
-  "/cart/product/:id",auth,async (req: Request, res: Response, next: Function) => {
+  "/cart/product/:productId",auth,async (req: Request, res: Response, next: Function) => {
     const controller = new CartController();
     const request = req as CustomRequest;
-    const { id } = req.params;
+    const { productId } = req.params;
     try {
-      const response = await controller.deleteCartProduct(id, request.decoded);
+      const response = await controller.deleteCartProduct(productId, request.decoded);
       return res.json(response);
     } catch (err) {
       next(err);
